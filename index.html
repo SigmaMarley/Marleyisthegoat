@@ -1,50 +1,111 @@
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Gamepad2, Search } from "lucide-react";
-
-const games = [
-  { title: "Slope", url: "https://example.com/slope" },
-  { title: "Run 3", url: "https://example.com/run3" },
-  { title: "Basketball Stars", url: "https://example.com/basketball-stars" },
-  { title: "Moto X3M", url: "https://example.com/moto-x3m" }
-];
-
-export default function GamesPage() {
-  const [search, setSearch] = useState("");
-  const filteredGames = games.filter(game => game.title.toLowerCase().includes(search.toLowerCase()));
-
-  return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <header className="bg-gray-800 p-4 flex justify-between items-center shadow-lg">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Gamepad2 className="w-8 h-8 text-blue-500" /> Unblocked Games Hub
-        </h1>
-        <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
-          <Search className="w-5 h-5 text-gray-400" />
-          <Input 
-            placeholder="Search games..." 
-            value={search} 
-            onChange={(e) => setSearch(e.target.value)} 
-            className="bg-transparent border-none focus:outline-none text-white px-2"
-          />
-        </div>
-      </header>
-      <main className="p-6 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredGames.map((game, index) => (
-            <Card key={index} className="bg-gray-800 hover:bg-gray-700 transition p-4 text-center rounded-lg shadow-lg">
-              <CardContent>
-                <h2 className="text-lg font-semibold mb-2">{game.title}</h2>
-                <Button className="bg-blue-500 hover:bg-blue-600 w-full" onClick={() => window.open(game.url, "_blank")}>
-                  Play Now
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </main>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unblocked Games Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #181818;
+            color: white;
+            text-align: center;
+            margin: 0;
+        }
+        header {
+            background-color: #202020;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .search-container {
+            margin: 20px;
+        }
+        input {
+            padding: 10px;
+            width: 60%;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .game-card {
+            background-color: #282828;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .game-card:hover {
+            background-color: #3a3a3a;
+        }
+        button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <header>Unblocked Games Hub</header>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
     </div>
-  );
-}
+    <div class="games-grid" id="gamesContainer">
+        <!-- Games will be added dynamically -->
+    </div>
+
+    <script>
+        const games = [
+            { title: "Slope", url: "https://example.com/slope" },
+            { title: "Run 3", url: "https://example.com/run3" },
+            { title: "Basketball Stars", url: "https://example.com/basketball-stars" },
+            { title: "Moto X3M", url: "https://example.com/moto-x3m" }
+        ];
+
+        function displayGames() {
+            const container = document.getElementById("gamesContainer");
+            container.innerHTML = "";
+            games.forEach(game => {
+                const gameCard = document.createElement("div");
+                gameCard.classList.add("game-card");
+                gameCard.innerHTML = `
+                    <h3>${game.title}</h3>
+                    <button onclick="window.open('${game.url}', '_blank')">Play Now</button>
+                `;
+                container.appendChild(gameCard);
+            });
+        }
+
+        function filterGames() {
+            const searchValue = document.getElementById("search").value.toLowerCase();
+            const filteredGames = games.filter(game => game.title.toLowerCase().includes(searchValue));
+            const container = document.getElementById("gamesContainer");
+            container.innerHTML = "";
+            filteredGames.forEach(game => {
+                const gameCard = document.createElement("div");
+                gameCard.classList.add("game-card");
+                gameCard.innerHTML = `
+                    <h3>${game.title}</h3>
+                    <button onclick="window.open('${game.url}', '_blank')">Play Now</button>
+                `;
+                container.appendChild(gameCard);
+            });
+        }
+
+        displayGames();
+    </script>
+</body>
+</html>
