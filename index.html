@@ -1,8 +1,8 @@
-<import { useState } from "react";
-<import { Input } from "@/components/ui/input";
-<import { Button } from "@/components/ui/button";
-<import { Card, CardContent } from "@/components/ui/card";
-<import { Gamepad2 } from "lucide-react";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Gamepad2, Search } from "lucide-react";
 
 const games = [
   { title: "Slope", url: "https://example.com/slope" },
@@ -16,23 +16,35 @@ export default function GamesPage() {
   const filteredGames = games.filter(game => game.title.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4 flex items-center gap-2">
-        <Gamepad2 className="w-8 h-8" /> Unblocked Games Hub
-      </h1>
-      <Input placeholder="Search games..." value={search} onChange={(e) => setSearch(e.target.value)} className="mb-4" />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredGames.map((game, index) => (
-          <Card key={index} className="p-4 text-center">
-            <CardContent>
-              <h2 className="text-lg font-semibold">{game.title}</h2>
-              <Button className="mt-2" onClick={() => window.open(game.url, "_blank")}>
-                Play Now
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+    <div className="min-h-screen bg-gray-900 text-white">
+      <header className="bg-gray-800 p-4 flex justify-between items-center shadow-lg">
+        <h1 className="text-2xl font-bold flex items-center gap-2">
+          <Gamepad2 className="w-8 h-8 text-blue-500" /> Unblocked Games Hub
+        </h1>
+        <div className="flex items-center bg-gray-700 px-3 py-1 rounded-full">
+          <Search className="w-5 h-5 text-gray-400" />
+          <Input 
+            placeholder="Search games..." 
+            value={search} 
+            onChange={(e) => setSearch(e.target.value)} 
+            className="bg-transparent border-none focus:outline-none text-white px-2"
+          />
+        </div>
+      </header>
+      <main className="p-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredGames.map((game, index) => (
+            <Card key={index} className="bg-gray-800 hover:bg-gray-700 transition p-4 text-center rounded-lg shadow-lg">
+              <CardContent>
+                <h2 className="text-lg font-semibold mb-2">{game.title}</h2>
+                <Button className="bg-blue-500 hover:bg-blue-600 w-full" onClick={() => window.open(game.url, "_blank")}>
+                  Play Now
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
