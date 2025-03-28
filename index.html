@@ -56,6 +56,26 @@
         button:hover {
             background-color: darkred;
         }
+        #achievementScreen {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        #hiddenButton {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 5px;
+            height: 5px;
+            background: transparent;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -63,9 +83,15 @@
     <div class="search-container">
         <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
     </div>
-    <div class="games-grid" id="gamesContainer">
-        <!-- Games will be added dynamically -->
+    <div class="games-grid" id="gamesContainer"></div>
+    
+    <div id="achievementScreen">
+        <h2>Achievement Unlocked!</h2>
+        <p>You discovered a hidden Easter egg!</p>
+        <button onclick="document.getElementById('achievementScreen').style.display='none'">Close</button>
     </div>
+    
+    <button id="hiddenButton" onclick="window.open('https://example.com/hidden-game', '_blank')"></button>
 
     <script>
         const games = [
@@ -77,8 +103,7 @@
             { title: "1v1 lol", url: "https://playfreegamesonlinewithoutdownloading.github.io/1v1-lol.html" },
             { title: "Run 1 (A little laggy)", url: "https://sites.google.com/site/unblockedgamesportal/run-1" },
             { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
-            { title: "Doom (takes a little while to load)", url: "https://archive.org/details/doom-play" },
-            { title: "example", url: "https://example.com/newgame2" }
+            { title: "Doom (takes a little while to load)", url: "https://archive.org/details/doom-play" }
         ];
 
         function displayGames() {
@@ -97,6 +122,9 @@
 
         function filterGames() {
             const searchValue = document.getElementById("search").value.toLowerCase();
+            if (searchValue === "abcdefg") {
+                document.getElementById("achievementScreen").style.display = "block";
+            }
             const filteredGames = games.filter(game => game.title.toLowerCase().includes(searchValue));
             const container = document.getElementById("gamesContainer");
             container.innerHTML = "";
@@ -110,6 +138,20 @@
                 container.appendChild(gameCard);
             });
         }
+        
+        let konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        let konamiIndex = 0;
+        document.addEventListener("keydown", (event) => {
+            if (event.keyCode === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    alert("Konami Code Activated! You found another secret!");
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
 
         displayGames();
     </script>
