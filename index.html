@@ -67,6 +67,12 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
+        #viewAchievementsButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: blue;
+        }
         #hiddenButton {
             position: absolute;
             bottom: 5px;
@@ -80,6 +86,7 @@
 </head>
 <body>
     <header>IXL tutoring</header>
+    <button id="viewAchievementsButton" onclick="showAchievements()">View Achievements</button>
     <div class="search-container">
         <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
     </div>
@@ -97,7 +104,6 @@
         <button onclick="document.getElementById('allAchievements').style.display='none'">Close</button>
     </div>
     
-    <button onclick="showAchievements()">View Achievements</button>
     <button id="hiddenButton" onclick="unlockAchievement('Hidden Click!')"></button>
 
     <script>
@@ -115,10 +121,10 @@
 
         ];
 
-        function displayGames() {
+        function displayGames(filtered = games) {
             const container = document.getElementById("gamesContainer");
             container.innerHTML = "";
-            games.forEach(game => {
+            filtered.forEach(game => {
                 const gameCard = document.createElement("div");
                 gameCard.classList.add("game-card");
                 gameCard.innerHTML = `
@@ -151,6 +157,8 @@
             if (searchValue === "abcdefg") {
                 unlockAchievement("Secret Code Discovered!");
             }
+            const filteredGames = games.filter(game => game.title.toLowerCase().includes(searchValue));
+            displayGames(filteredGames);
         }
         
         let konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
@@ -167,6 +175,8 @@
             }
         });
 
+        unlockAchievement("First Visit!");
+        document.addEventListener("click", () => unlockAchievement("Click Explorer!"));
         displayGames();
     </script>
 </body>
