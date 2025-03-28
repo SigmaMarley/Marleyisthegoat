@@ -56,7 +56,7 @@
         button:hover {
             background-color: darkred;
         }
-        #achievementScreen {
+        #achievementScreen, #allAchievements {
             display: none;
             position: fixed;
             top: 50%;
@@ -87,23 +87,24 @@
     
     <div id="achievementScreen">
         <h2>Achievement Unlocked!</h2>
-        <p>You discovered a hidden Easter egg!</p>
+        <p id="achievementText"></p>
         <button onclick="document.getElementById('achievementScreen').style.display='none'">Close</button>
     </div>
     
-    <button id="hiddenButton" onclick="window.open('https://example.com/hidden-game', '_blank')"></button>
+    <div id="allAchievements">
+        <h2>Your Achievements</h2>
+        <ul id="achievementsList"></ul>
+        <button onclick="document.getElementById('allAchievements').style.display='none'">Close</button>
+    </div>
+    
+    <button onclick="showAchievements()">View Achievements</button>
+    <button id="hiddenButton" onclick="unlockAchievement('Hidden Click!')"></button>
 
     <script>
         const games = [
             { title: "Slope", url: "https://slope-unblocked-10x.github.io/game.html?target=205" },
             { title: "Run 3", url: "https://slope-unblocked-10x.github.io/game.html?target=422" },
-            { title: "Basket random", url: "https://randombasketballonline.github.io/" },
-            { title: "Shell Shocker", url: "https://orcatech2711.github.io/nano/games/shellshockers/preview/preview.html" },
-            { title: "Agar io", url: "https://playfreegamesonlinewithoutdownloading.github.io/agar.io.html" }, 
-            { title: "1v1 lol", url: "https://playfreegamesonlinewithoutdownloading.github.io/1v1-lol.html" },
-            { title: "Run 1 (A little laggy)", url: "https://sites.google.com/site/unblockedgamesportal/run-1" },
-            { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
-            { title: "Doom (takes a little while to load)", url: "https://archive.org/details/doom-play" }
+            { title: "Basket random", url: "https://randombasketballonline.github.io/" }
         ];
 
         function displayGames() {
@@ -120,23 +121,28 @@
             });
         }
 
+        function unlockAchievement(name) {
+            let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
+            if (!achievements.includes(name)) {
+                achievements.push(name);
+                localStorage.setItem("achievements", JSON.stringify(achievements));
+                document.getElementById("achievementText").innerText = name;
+                document.getElementById("achievementScreen").style.display = "block";
+            }
+        }
+
+        function showAchievements() {
+            let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
+            const list = document.getElementById("achievementsList");
+            list.innerHTML = achievements.map(a => `<li>${a}</li>`).join("");
+            document.getElementById("allAchievements").style.display = "block";
+        }
+
         function filterGames() {
             const searchValue = document.getElementById("search").value.toLowerCase();
             if (searchValue === "abcdefg") {
-                document.getElementById("achievementScreen").style.display = "block";
+                unlockAchievement("Secret Code Discovered!");
             }
-            const filteredGames = games.filter(game => game.title.toLowerCase().includes(searchValue));
-            const container = document.getElementById("gamesContainer");
-            container.innerHTML = "";
-            filteredGames.forEach(game => {
-                const gameCard = document.createElement("div");
-                gameCard.classList.add("game-card");
-                gameCard.innerHTML = `
-                    <h3>${game.title}</h3>
-                    <button onclick="window.open('${game.url}', '_blank')">Play Now</button>
-                `;
-                container.appendChild(gameCard);
-            });
         }
         
         let konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
@@ -145,7 +151,7 @@
             if (event.keyCode === konamiCode[konamiIndex]) {
                 konamiIndex++;
                 if (konamiIndex === konamiCode.length) {
-                    alert("Konami Code Activated! You found another secret!");
+                    unlockAchievement("Konami Code Master!");
                     konamiIndex = 0;
                 }
             } else {
