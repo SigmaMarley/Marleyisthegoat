@@ -107,32 +107,30 @@
     <button id="hiddenButton" onclick="unlockAchievement('Hidden Click!')"></button>
 
     <script>
-        const games = [
-            { title: "Slope", url: "https://slope-unblocked-10x.github.io/game.html?target=205" },
-            { title: "Run 3", url: "https://slope-unblocked-10x.github.io/game.html?target=422" },
-            { title: "Basket random", url: "https://randombasketballonline.github.io/" },
-            { title: "Shell Shocker", url: "https://orcatech2711.github.io/nano/games/shellshockers/preview/preview.html" },
-            { title: "Agar io", url: "https://playfreegamesonlinewithoutdownloading.github.io/agar.io.html" }, 
-            { title: "1v1 lol", url: "https://playfreegamesonlinewithoutdownloading.github.io/1v1-lol.html" },
-            { title: "Run 1 (A little laggy)", url: "https://sites.google.com/site/unblockedgamesportal/run-1" },
-            { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
-            { title: "Doom (takes a little while to load)", url: "https://archive.org/details/doom-play" },
-            { title: "example", url: "https://example.com/newgame2" }
+        let gamesPlayed = 0;
+        let searchesMade = 0;
+        
+        function playGame(url) {
+            gamesPlayed++;
+            checkAchievements();
+            window.open(url, '_blank');
+        }
 
-        ];
+        function checkAchievements() {
+            if (gamesPlayed === 5) unlockAchievement("5 Games Played!");
+            if (gamesPlayed === 10) unlockAchievement("10 Games Played!");
+            if (searchesMade === 1) unlockAchievement("First Search!");
+        }
 
-        function displayGames(filtered = games) {
-            const container = document.getElementById("gamesContainer");
-            container.innerHTML = "";
-            filtered.forEach(game => {
-                const gameCard = document.createElement("div");
-                gameCard.classList.add("game-card");
-                gameCard.innerHTML = `
-                    <h3>${game.title}</h3>
-                    <button onclick="window.open('${game.url}', '_blank')">Play Now</button>
-                `;
-                container.appendChild(gameCard);
-            });
+        function filterGames() {
+            const searchValue = document.getElementById("search").value.toLowerCase();
+            const filteredGames = games.filter(game => game.title.toLowerCase().includes(searchValue));
+            displayGames(filteredGames);
+            
+            if (searchValue.length > 0) {
+                searchesMade++;
+                checkAchievements();
+            }
         }
 
         function unlockAchievement(name) {
@@ -152,18 +150,32 @@
             document.getElementById("allAchievements").style.display = "block";
         }
 
-        function filterGames() {
-            const searchValue = document.getElementById("search").value.toLowerCase();
-            const filteredGames = games.filter(game => game.title.toLowerCase().includes(searchValue));
-            displayGames(filteredGames);
+        function displayGames(filtered = games) {
+            const container = document.getElementById("gamesContainer");
+            container.innerHTML = "";
+            filtered.forEach(game => {
+                const gameCard = document.createElement("div");
+                gameCard.classList.add("game-card");
+                gameCard.innerHTML = `
+                    <h3>${game.title}</h3>
+                    <button onclick="playGame('${game.url}')">Play Now</button>
+                `;
+                container.appendChild(gameCard);
+            });
         }
 
-        const achievementsToAdd = [
-            "5 Games Played!", "10 Games Played!", "First Search!", "Power User!", "Night Owl (Played at Midnight)",
-            "Early Bird (Played at Sunrise)", "Explorer (Clicked Every Game)", "Secret Finder!", "Click Master!", "The Ultimate Gamer!"
+        const games = [
+            { title: "Slope", url: "https://slope-unblocked-10x.github.io/game.html?target=205" },
+            { title: "Run 3", url: "https://slope-unblocked-10x.github.io/game.html?target=422" },
+            { title: "Basket random", url: "https://randombasketballonline.github.io/" },
+            { title: "Shell Shocker", url: "https://orcatech2711.github.io/nano/games/shellshockers/preview/preview.html" },
+            { title: "Agar io", url: "https://playfreegamesonlinewithoutdownloading.github.io/agar.io.html" },
+            { title: "1v1 lol", url: "https://playfreegamesonlinewithoutdownloading.github.io/1v1-lol.html" },
+            { title: "Run 1 (A little laggy)", url: "https://sites.google.com/site/unblockedgamesportal/run-1" },
+            { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
+            { title: "Doom (takes a little while to load)", url: "https://archive.org/details/doom-play" }
         ];
-
-        achievementsToAdd.forEach(ach => unlockAchievement(ach));
+        
         displayGames();
     </script>
 </body>
