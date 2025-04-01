@@ -56,7 +56,7 @@
         button:hover {
             background-color: darkred;
         }
-        #achievementScreen, #allAchievements {
+        #achievementScreen, #allAchievements, #devPanel {
             display: none;
             position: fixed;
             top: 50%;
@@ -67,7 +67,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
-        #viewAchievementsButton {
+        #viewAchievementsButton, #devPanelButton {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -87,6 +87,7 @@
 <body>
     <header>IXL tutoring</header>
     <button id="viewAchievementsButton" onclick="showAchievements()">View Achievements</button>
+    <button id="devPanelButton" onclick="showDevPanel()">Dev Panel</button>
     <div class="search-container">
         <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
     </div>
@@ -102,6 +103,13 @@
         <h2>Your Achievements</h2>
         <ul id="achievementsList"></ul>
         <button onclick="document.getElementById('allAchievements').style.display='none'">Close</button>
+    </div>
+    
+    <div id="devPanel">
+        <h2>Developer Panel</h2>
+        <button onclick="resetAchievements()">Reset Achievements</button>
+        <button onclick="unlockAchievement('Special Achievement!')">Give Special Achievement</button>
+        <button onclick="document.getElementById('devPanel').style.display='none'">Close</button>
     </div>
     
     <button id="hiddenButton" onclick="unlockAchievement('Hidden Click!')"></button>
@@ -150,6 +158,15 @@
             document.getElementById("allAchievements").style.display = "block";
         }
 
+        function resetAchievements() {
+            localStorage.removeItem("achievements");
+            alert("All achievements have been reset!");
+        }
+
+        function showDevPanel() {
+            document.getElementById("devPanel").style.display = "block";
+        }
+
         function displayGames(filtered = games) {
             const container = document.getElementById("gamesContainer");
             container.innerHTML = "";
@@ -174,6 +191,7 @@
             { title: "Run 1 (A little laggy)", url: "https://sites.google.com/site/unblockedgamesportal/run-1" },
             { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
             { title: "Doom (takes a little while to load)", url: "https://archive.org/details/doom-play" }
+
         ];
         
         displayGames();
