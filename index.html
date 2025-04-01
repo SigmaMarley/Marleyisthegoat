@@ -67,16 +67,16 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
-        #viewAchievementsButton {
+        #viewAchievementsButton, #devPanelButton {
             position: absolute;
             top: 10px;
             right: 10px;
             background-color: blue;
         }
-        #hiddenDevButton {
+        #hiddenButton {
             position: absolute;
-            bottom: 2px;
-            left: 2px;
+            bottom: 5px;
+            right: 5px;
             width: 5px;
             height: 5px;
             background: transparent;
@@ -87,6 +87,7 @@
 <body>
     <header>IXL tutoring</header>
     <button id="viewAchievementsButton" onclick="showAchievements()">View Achievements</button>
+    <button id="devPanelButton" onclick="showDevPanel()">Dev Panel</button>
     <div class="search-container">
         <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
     </div>
@@ -106,16 +107,40 @@
     
     <div id="devPanel">
         <h2>Developer Panel</h2>
-        <button onclick="resetAchievements()">Reset All Achievements</button>
-        <button onclick="grantSpecialAchievement()">Give Special Achievement</button>
-        <input type="text" id="userID" placeholder="Enter User ID">
-        <button onclick="resetUserAchievements()">Reset User Achievements</button>
+        <button onclick="resetAchievements()">Reset Achievements</button>
+        <button onclick="unlockAchievement('Special Achievement!')">Give Special Achievement</button>
         <button onclick="document.getElementById('devPanel').style.display='none'">Close</button>
     </div>
     
-    <button id="hiddenDevButton" onclick="showDevPanel()"></button>
+    <button id="hiddenButton" onclick="unlockAchievement('Hidden Click!')"></button>
 
     <script>
+        let gamesPlayed = 0;
+        let searchesMade = 0;
+        
+        function playGame(url) {
+            gamesPlayed++;
+            checkAchievements();
+            window.open(url, '_blank');
+        }
+
+        function checkAchievements() {
+            if (gamesPlayed === 5) unlockAchievement("5 Games Played!");
+            if (gamesPlayed === 10) unlockAchievement("10 Games Played!");
+            if (searchesMade === 1) unlockAchievement("First Search!");
+        }
+
+        function filterGames() {
+            const searchValue = document.getElementById("search").value.toLowerCase();
+            const filteredGames = games.filter(game => game.title.toLowerCase().includes(searchValue));
+            displayGames(filteredGames);
+            
+            if (searchValue.length > 0) {
+                searchesMade++;
+                checkAchievements();
+            }
+        }
+
         function unlockAchievement(name) {
             let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
             if (!achievements.includes(name)) {
@@ -126,28 +151,50 @@
             }
         }
 
+        function showAchievements() {
+            let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
+            const list = document.getElementById("achievementsList");
+            list.innerHTML = achievements.map(a => `<li>${a}</li>`).join("");
+            document.getElementById("allAchievements").style.display = "block";
+        }
+
         function resetAchievements() {
             localStorage.removeItem("achievements");
             alert("All achievements have been reset!");
         }
 
-        function grantSpecialAchievement() {
-            unlockAchievement("Special Achievement!");
-        }
-
-        function resetUserAchievements() {
-            let userID = document.getElementById("userID").value;
-            if (userID) {
-                localStorage.removeItem(`achievements_${userID}`);
-                alert(`Achievements reset for user ${userID}`);
-            } else {
-                alert("Please enter a valid User ID.");
-            }
-        }
-
         function showDevPanel() {
             document.getElementById("devPanel").style.display = "block";
         }
+
+        function displayGames(filtered = games) {
+            const container = document.getElementById("gamesContainer");
+            container.innerHTML = "";
+            filtered.forEach(game => {
+                const gameCard = document.createElement("div");
+                gameCard.classList.add("game-card");
+                gameCard.innerHTML = `
+                    <h3>${game.title}</h3>
+                    <button onclick="playGame('${game.url}')">Play Now</button>
+                `;
+                container.appendChild(gameCard);
+            });
+        }
+
+        const games = [
+            { title: "Slope", url: "https://slope-unblocked-10x.github.io/game.html?target=205" },
+            { title: "Run 3", url: "https://slope-unblocked-10x.github.io/game.html?target=422" },
+            { title: "Basket random", url: "https://randombasketballonline.github.io/" },
+            { title: "Shell Shocker", url: "https://orcatech2711.github.io/nano/games/shellshockers/preview/preview.html" },
+            { title: "Agar io", url: "https://playfreegamesonlinewithoutdownloading.github.io/agar.io.html" },
+            { title: "1v1 lol", url: "https://playfreegamesonlinewithoutdownloading.github.io/1v1-lol.html" },
+            { title: "Run 1 (A little laggy)", url: "https://sites.google.com/site/unblockedgamesportal/run-1" },
+            { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
+            { title: "Doom (takes a little while to load)", url: "https://archive.org/details/doom-play" }
+
+        ];
+        
+        displayGames();
     </script>
 </body>
 </html>
