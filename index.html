@@ -147,7 +147,6 @@
         }
 
         function filterGames() {
-            const searchValue = document.getElementById("search").value.toLowerCase();
             searchesMade++;
             checkAchievements();
         }
@@ -201,10 +200,9 @@
                 inputSequence = [];
             }
             if (inputSequence.length > konamiCode.length) inputSequence.shift();
-            });
-         }
+        });
 
-         const games = [
+        const games = [
             { title: "Slope", url: "https://slope-unblocked-10x.github.io/game.html?target=205" },
             { title: "Run 3", url: "https://slope-unblocked-10x.github.io/game.html?target=422" },
             { title: "Basket Random", url: "https://randombasketballonline.github.io/" },
@@ -215,7 +213,18 @@
             { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
             { title: "Doom", url: "https://archive.org/details/doom-play" }
         ];
-        
+
+        function displayGames() {
+            const container = document.getElementById("gamesContainer");
+            container.innerHTML = "";
+            games.forEach(game => {
+                let div = document.createElement("div");
+                div.className = "game-card";
+                div.innerHTML = `<h3>${game.title}</h3><button onclick="playGame('${game.url}')">Play</button>`;
+                container.appendChild(div);
+            });
+        }
+
         displayGames();
     </script>
 </body>
