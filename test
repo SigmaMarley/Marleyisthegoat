@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IXL tutoring</title>
+    <title>IXL Tutoring</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -79,12 +79,21 @@
             left: 10px;
             background-color: purple;
         }
+        #hiddenButton {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 5px;
+            height: 5px;
+            background: transparent;
+            border: none;
+        }
     </style>
 </head>
 <body>
-    <header>IXL tutoring</header>
+    <header>IXL Tutoring</header>
     <button id="viewAchievementsButton" onclick="showAchievements()">View Achievements</button>
-    <button id="devPanelButton" onclick="showDevPanel()">Dev Panel</button>
+    <button id="devPanelButton" onclick="requestDevAccess()">Dev Panel</button>
     <div class="search-container">
         <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
     </div>
@@ -106,10 +115,43 @@
         <h2>Developer Panel</h2>
         <button onclick="resetAchievements()">Reset Achievements</button>
         <button onclick="giveAllAchievements()">Give All Achievements</button>
+        <button onclick="unlockAchievement('Special Achievement!')">Give Special Achievement</button>
         <button onclick="document.getElementById('devPanel').style.display='none'">Close</button>
     </div>
 
+    <button id="hiddenButton" onclick="unlockAchievement('Found a Secret Easter Egg!')"></button>
+
     <script>
+        let gamesPlayed = 0;
+        let searchesMade = 0;
+        const devPasscode = "client-only-access";
+
+        function playGame(url) {
+            gamesPlayed++;
+            checkAchievements();
+            window.open(url, '_blank');
+        }
+
+        function checkAchievements() {
+            if (gamesPlayed === 1) unlockAchievement("1 Game Played!");
+            if (gamesPlayed === 5) unlockAchievement("5 Games Played!");
+            if (gamesPlayed === 10) unlockAchievement("10 Games Played!");
+            if (gamesPlayed === 15) unlockAchievement("15 Games Played!");
+            if (gamesPlayed === 20) unlockAchievement("Played 20 Games!");
+            if (gamesPlayed === 50) unlockAchievement("Played 50 Games!");
+            if (searchesMade === 1) unlockAchievement("First Search!");
+            if (searchesMade === 5) unlockAchievement("5 Searches!");
+            if (searchesMade === 10) unlockAchievement("10 Searches!");
+            if (searchesMade === 25) unlockAchievement("25 Searches Made!");
+            if (searchesMade === 100) unlockAchievement("100 Searches Made!");
+        }
+
+        function filterGames() {
+            const searchValue = document.getElementById("search").value.toLowerCase();
+            searchesMade++;
+            checkAchievements();
+        }
+
         function unlockAchievement(name) {
             let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
             if (!achievements.includes(name)) {
@@ -126,20 +168,41 @@
             document.getElementById("allAchievements").style.display = "block";
         }
 
+        function requestDevAccess() {
+            let input = prompt("Enter the Developer Passcode:");
+            if (input === devPasscode) {
+                document.getElementById("devPanel").style.display = "block";
+                unlockAchievement("Secret Code Entered!");
+            } else {
+                alert("Access Denied!");
+            }
+        }
+
         function resetAchievements() {
             localStorage.removeItem("achievements");
             alert("All achievements have been reset!");
         }
 
         function giveAllAchievements() {
-            let allAchievements = ["5 Games Played!", "10 Games Played!", "First Search!", "Special Achievement!", "Hidden Click!"];
+            let allAchievements = ["1 Game Played!", "5 Games Played!", "10 Games Played!", "15 Games Played!", "Played 20 Games!", 
+                                   "Played 50 Games!", "First Search!", "5 Searches!", "10 Searches!", "25 Searches Made!", 
+                                   "100 Searches Made!", "Found a Secret Easter Egg!", "Secret Code Entered!", "Entered the Konami Code!"];
             localStorage.setItem("achievements", JSON.stringify(allAchievements));
             alert("All achievements have been unlocked!");
         }
 
-        function showDevPanel() {
-            document.getElementById("devPanel").style.display = "block";
-        }
+        let konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "KeyB", "KeyA", "Enter"];
+        let inputSequence = [];
+
+        document.addEventListener("keydown", function(event) {
+            inputSequence.push(event.code);
+            if (inputSequence.join(",") === konamiCode.join(",")) {
+                unlockAchievement("Entered the Konami Code!");
+                inputSequence = [];
+            }
+            if (inputSequence.length > konamiCode.length) inputSequence.shift();
+        });
+
     </script>
 </body>
 </html>
