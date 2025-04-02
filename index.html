@@ -93,12 +93,10 @@
 <body>
     <header>IXL Tutoring</header>
     <button id="viewAchievementsButton" onclick="showAchievements()">View Achievements</button>
-    <button id="devPanelButton" onclick="showDevPanel()">Dev Panel</button>
-    
+    <button id="devPanelButton" onclick="requestDevAccess()">Dev Panel</button>
     <div class="search-container">
         <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
     </div>
-    
     <div class="games-grid" id="gamesContainer"></div>
     
     <div id="achievementScreen">
@@ -126,6 +124,7 @@
     <script>
         let gamesPlayed = 0;
         let searchesMade = 0;
+        const devPasscode = "client-only-access";  // Set your secret passcode here
 
         function playGame(url) {
             gamesPlayed++;
@@ -138,9 +137,11 @@
             if (gamesPlayed === 5) unlockAchievement("5 Games Played!");
             if (gamesPlayed === 10) unlockAchievement("10 Games Played!");
             if (gamesPlayed === 15) unlockAchievement("15 Games Played!");
+            if (gamesPlayed === 20) unlockAchievement("Played 20 Games!");
             if (searchesMade === 1) unlockAchievement("First Search!");
             if (searchesMade === 5) unlockAchievement("5 Searches!");
             if (searchesMade === 10) unlockAchievement("10 Searches!");
+            if (searchesMade === 25) unlockAchievement("25 Searches Made!");
         }
 
         function filterGames() {
@@ -170,19 +171,27 @@
             document.getElementById("allAchievements").style.display = "block";
         }
 
+        function requestDevAccess() {
+            let input = prompt("Enter the Developer Passcode:");
+            if (input === devPasscode) {
+                document.getElementById("devPanel").style.display = "block";
+                unlockAchievement("Secret Code Entered!");
+            } else {
+                alert("Access Denied!");
+            }
+        }
+
         function resetAchievements() {
             localStorage.removeItem("achievements");
             alert("All achievements have been reset!");
         }
 
         function giveAllAchievements() {
-            let allAchievements = ["1 Game Played!", "5 Games Played!", "10 Games Played!", "15 Games Played!", "First Search!", "5 Searches!", "10 Searches!", "Special Achievement!", "Hidden Click!"];
+            let allAchievements = ["1 Game Played!", "5 Games Played!", "10 Games Played!", "15 Games Played!", "Played 20 Games!", 
+                                   "First Search!", "5 Searches!", "10 Searches!", "25 Searches Made!", 
+                                   "Special Achievement!", "Hidden Click!", "Secret Code Entered!"];
             localStorage.setItem("achievements", JSON.stringify(allAchievements));
             alert("All achievements have been unlocked!");
-        }
-
-        function showDevPanel() {
-            document.getElementById("devPanel").style.display = "block";
         }
 
         function displayGames(filtered = games) {
@@ -191,15 +200,12 @@
             filtered.forEach(game => {
                 const gameCard = document.createElement("div");
                 gameCard.classList.add("game-card");
-                gameCard.innerHTML = `
-                    <h3>${game.title}</h3>
-                    <button onclick="playGame('${game.url}')">Play Now</button>
-                `;
+                gameCard.innerHTML = `<h3>${game.title}</h3><button onclick="playGame('${game.url}')">Play Now</button>`;
                 container.appendChild(gameCard);
             });
         }
 
-        const games = [
+        const games =   
             { title: "Slope", url: "https://slope-unblocked-10x.github.io/game.html?target=205" },
             { title: "Run 3", url: "https://slope-unblocked-10x.github.io/game.html?target=422" },
             { title: "Basket Random", url: "https://randombasketballonline.github.io/" },
@@ -210,7 +216,6 @@
             { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
             { title: "Doom", url: "https://archive.org/details/doom-play" }
         ];
-        
         displayGames();
     </script>
 </body>
