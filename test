@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IXL tutoring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #181818;
+            color: white;
+            text-align: center;
+            margin: 0;
+        }
+        header {
+            background-color: #202020;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .search-container {
+            margin: 20px;
+        }
+        input {
+            padding: 10px;
+            width: 60%;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .game-card {
+            background-color: #282828;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .game-card:hover {
+            background-color: #3a3a3a;
+        }
+        button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: darkred;
+        }
+        #achievementScreen, #allAchievements, #devPanel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        #viewAchievementsButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: blue;
+        }
+        #devPanelButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: purple;
+        }
+    </style>
+</head>
+<body>
+    <header>IXL tutoring</header>
+    <button id="viewAchievementsButton" onclick="showAchievements()">View Achievements</button>
+    <button id="devPanelButton" onclick="showDevPanel()">Dev Panel</button>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search games..." onkeyup="filterGames()">
+    </div>
+    <div class="games-grid" id="gamesContainer"></div>
+    
+    <div id="achievementScreen">
+        <h2>Achievement Unlocked!</h2>
+        <p id="achievementText"></p>
+        <button onclick="document.getElementById('achievementScreen').style.display='none'">Close</button>
+    </div>
+    
+    <div id="allAchievements">
+        <h2>Your Achievements</h2>
+        <ul id="achievementsList"></ul>
+        <button onclick="document.getElementById('allAchievements').style.display='none'">Close</button>
+    </div>
+    
+    <div id="devPanel">
+        <h2>Developer Panel</h2>
+        <button onclick="resetAchievements()">Reset Achievements</button>
+        <button onclick="giveAllAchievements()">Give All Achievements</button>
+        <button onclick="document.getElementById('devPanel').style.display='none'">Close</button>
+    </div>
+
+    <script>
+        function unlockAchievement(name) {
+            let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
+            if (!achievements.includes(name)) {
+                achievements.push(name);
+                localStorage.setItem("achievements", JSON.stringify(achievements));
+                document.getElementById("achievementText").innerText = name;
+                document.getElementById("achievementScreen").style.display = "block";
+            }
+        }
+
+        function showAchievements() {
+            let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
+            document.getElementById("achievementsList").innerHTML = achievements.map(a => `<li>${a}</li>`).join("");
+            document.getElementById("allAchievements").style.display = "block";
+        }
+
+        function resetAchievements() {
+            localStorage.removeItem("achievements");
+            alert("All achievements have been reset!");
+        }
+
+        function giveAllAchievements() {
+            let allAchievements = ["5 Games Played!", "10 Games Played!", "First Search!", "Special Achievement!", "Hidden Click!"];
+            localStorage.setItem("achievements", JSON.stringify(allAchievements));
+            alert("All achievements have been unlocked!");
+        }
+
+        function showDevPanel() {
+            document.getElementById("devPanel").style.display = "block";
+        }
+    </script>
+</body>
+</html>
