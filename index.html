@@ -67,11 +67,17 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
-        #viewAchievementsButton, #devPanelButton {
+        #viewAchievementsButton {
             position: absolute;
             top: 10px;
             right: 10px;
             background-color: blue;
+        }
+        #devPanelButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: purple;
         }
         #hiddenButton {
             position: absolute;
@@ -108,16 +114,17 @@
     <div id="devPanel">
         <h2>Developer Panel</h2>
         <button onclick="resetAchievements()">Reset Achievements</button>
+        <button onclick="giveAllAchievements()">Give All Achievements</button>
         <button onclick="unlockAchievement('Special Achievement!')">Give Special Achievement</button>
         <button onclick="document.getElementById('devPanel').style.display='none'">Close</button>
     </div>
-    
+
     <button id="hiddenButton" onclick="unlockAchievement('Hidden Click!')"></button>
 
     <script>
         let gamesPlayed = 0;
         let searchesMade = 0;
-        
+
         function playGame(url) {
             gamesPlayed++;
             checkAchievements();
@@ -153,14 +160,19 @@
 
         function showAchievements() {
             let achievements = JSON.parse(localStorage.getItem("achievements")) || [];
-            const list = document.getElementById("achievementsList");
-            list.innerHTML = achievements.map(a => `<li>${a}</li>`).join("");
+            document.getElementById("achievementsList").innerHTML = achievements.map(a => `<li>${a}</li>`).join("");
             document.getElementById("allAchievements").style.display = "block";
         }
 
         function resetAchievements() {
             localStorage.removeItem("achievements");
             alert("All achievements have been reset!");
+        }
+
+        function giveAllAchievements() {
+            let allAchievements = ["5 Games Played!", "10 Games Played!", "First Search!", "Special Achievement!", "Hidden Click!"];
+            localStorage.setItem("achievements", JSON.stringify(allAchievements));
+            alert("All achievements have been unlocked!");
         }
 
         function showDevPanel() {
@@ -191,7 +203,6 @@
             { title: "Run 1 (A little laggy)", url: "https://sites.google.com/site/unblockedgamesportal/run-1" },
             { title: "Ping Pong", url: "https://marleyc.w3spaces.com/index.html" },
             { title: "Doom (takes a little while to load)", url: "https://archive.org/details/doom-play" }
-
         ];
         
         displayGames();
