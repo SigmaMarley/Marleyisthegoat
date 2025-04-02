@@ -119,12 +119,12 @@
         <button onclick="document.getElementById('devPanel').style.display='none'">Close</button>
     </div>
 
-    <button id="hiddenButton" onclick="unlockAchievement('Hidden Click!')"></button>
+    <button id="hiddenButton" onclick="unlockAchievement('Found a Secret Easter Egg!')"></button>
 
     <script>
         let gamesPlayed = 0;
         let searchesMade = 0;
-        const devPasscode = "Marley"; 
+        const devPasscode = "Marley";
 
         function playGame(url) {
             gamesPlayed++;
@@ -138,21 +138,18 @@
             if (gamesPlayed === 10) unlockAchievement("10 Games Played!");
             if (gamesPlayed === 15) unlockAchievement("15 Games Played!");
             if (gamesPlayed === 20) unlockAchievement("Played 20 Games!");
+            if (gamesPlayed === 50) unlockAchievement("Played 50 Games!");
             if (searchesMade === 1) unlockAchievement("First Search!");
             if (searchesMade === 5) unlockAchievement("5 Searches!");
             if (searchesMade === 10) unlockAchievement("10 Searches!");
             if (searchesMade === 25) unlockAchievement("25 Searches Made!");
+            if (searchesMade === 100) unlockAchievement("100 Searches Made!");
         }
 
         function filterGames() {
             const searchValue = document.getElementById("search").value.toLowerCase();
-            const filteredGames = games.filter(game => game.title.toLowerCase().includes(searchValue));
-            displayGames(filteredGames);
-            
-            if (searchValue.length > 0) {
-                searchesMade++;
-                checkAchievements();
-            }
+            searchesMade++;
+            checkAchievements();
         }
 
         function unlockAchievement(name) {
@@ -188,22 +185,24 @@
 
         function giveAllAchievements() {
             let allAchievements = ["1 Game Played!", "5 Games Played!", "10 Games Played!", "15 Games Played!", "Played 20 Games!", 
-                                   "First Search!", "5 Searches!", "10 Searches!", "25 Searches Made!", 
-                                   "Special Achievement!", "Hidden Click!", "Secret Code Entered!"];
+                                   "Played 50 Games!", "First Search!", "5 Searches!", "10 Searches!", "25 Searches Made!", 
+                                   "100 Searches Made!", "Found a Secret Easter Egg!", "Secret Code Entered!", "Entered the Konami Code!"];
             localStorage.setItem("achievements", JSON.stringify(allAchievements));
             alert("All achievements have been unlocked!");
         }
 
-        function displayGames(filtered = games) {
-            const container = document.getElementById("gamesContainer");
-            container.innerHTML = "";
-            filtered.forEach(game => {
-                const gameCard = document.createElement("div");
-                gameCard.classList.add("game-card");
-                gameCard.innerHTML = `<h3>${game.title}</h3><button onclick="playGame('${game.url}')">Play Now</button>`;
-                container.appendChild(gameCard);
+        let konamiCode = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "KeyB", "KeyA", "Enter"];
+        let inputSequence = [];
+
+        document.addEventListener("keydown", function(event) {
+            inputSequence.push(event.code);
+            if (inputSequence.join(",") === konamiCode.join(",")) {
+                unlockAchievement("Entered the Konami Code!");
+                inputSequence = [];
+            }
+            if (inputSequence.length > konamiCode.length) inputSequence.shift();
             });
-        }
+         }
 
          const games = [
             { title: "Slope", url: "https://slope-unblocked-10x.github.io/game.html?target=205" },
